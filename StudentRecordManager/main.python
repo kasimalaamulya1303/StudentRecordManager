@@ -1,0 +1,45 @@
+import re
+from student import Student
+
+FILE_NAME = "students.txt"
+EMAIL_REGEX = r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
+
+def is_valid_email(email):
+    return re.match(EMAIL_REGEX, email)
+
+def add_student():
+    try:
+        s = Student()
+        s.roll_no = input("Enter Roll No: ").strip()
+        s.name = input("Enter Name: ").strip()
+        s.email = input("Enter Email: ").strip()
+        if not s.roll_no or not s.name:
+            raise ValueError("Roll No and Name cannot be empty!")
+        if not is_valid_email(s.email):
+            raise ValueError("Invalid Email! Eg: abc@gmail.com")
+        with open(FILE_NAME, "a") as f:
+            f.write(f"{s.roll_no},{s.name},{s.email}\n")
+        print("Student Saved Successfully!")
+    except ValueError as ve:
+        print(f"Error: {ve}")
+
+def read_students():
+    try:
+        with open(FILE_NAME, "r") as f:
+            print("\n--- All Students ---")
+            for line in f:
+                print(line.strip())
+    except FileNotFoundError:
+        print("No records yet!")
+
+while True:
+    print("\n1. Add Student\n2. Read Data\n3. Exit")
+    choice = input("Choose: ")
+    if choice == "1":
+        add_student()
+    elif choice == "2":
+        read_students()
+    elif choice == "3":
+        break
+    else:
+        print("Enter 1, 2 or 3 only")
